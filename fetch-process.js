@@ -147,6 +147,12 @@ https.get(URL_2, (res) => {
       const states = responseData['statewise'];
       for (let state of states) {
         try {
+          if (undefined == state) {
+            state = {};
+            state['confirmed'] = 0;
+          } else {
+            state['confirmed'] = parseInt(state['confirmed']);
+          }
           logger.info(state.state, state);
         } catch (e) {
           // console.error(district, e);
