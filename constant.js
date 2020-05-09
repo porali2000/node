@@ -1,8 +1,6 @@
-
-const https = require('https');
 const { transports, createLogger, format } = require('winston');
 
-const logger = createLogger({
+var logger = createLogger({
   format: format.json(),
   defaultMeta: { hierachy: 'district' },
   transports: [
@@ -10,6 +8,8 @@ const logger = createLogger({
     new transports.File({ filename: '/var/log/data.log', level: 'info' })
   ]
 });
+
+
 
 var districtMap = new Map();
 districtMap.set("Kancheepuram", "காஞ்சீபுரம்");
@@ -29,7 +29,9 @@ districtMap.set("Karur", "கரூர்");
 districtMap.set("Tiruvannamalai", "திருவண்ணாமலை");
 districtMap.set("Namakkal", "நாமக்கல்");
 districtMap.set("Viluppuram", "விழுப்புரம்");
+districtMap.set("Villupuram", "விழுப்புரம்");
 districtMap.set("Thoothukkudi", "தூத்துக்குடி");
+districtMap.set("Thoothukudi", "தூத்துக்குடி");
 districtMap.set("Theni", "தேனீ");
 districtMap.set("Dindigul", "திண்டுக்கல்");
 districtMap.set("Sivaganga", "சிவகங்கை");
@@ -42,14 +44,32 @@ districtMap.set("Kallakurichi", "கல்லக்குரிச்சி");
 districtMap.set("Perambalur", "பெரம்பலூர்");
 districtMap.set("Kallakurichi", "கல்லக்குரிச்சி");
 districtMap.set("Tiruchirappalli", "திருச்சிராப்பள்ளி");
+districtMap.set("Trichy", "திருச்சிராப்பள்ளி");
 districtMap.set("The Nilgiris", "நீலகிரி");
+districtMap.set("Nilgiris", "நீலகிரி");
 districtMap.set("Ariyalur", "அரியலூர்");
 districtMap.set("Tenkasi", "தென்காசி");
 districtMap.set("Pudukkottai", "புதுக்கோட்டை");
+districtMap.set("Pudukottai", "புதுக்கோட்டை");
 districtMap.set("Krishnagiri", "கிருஷ்ணகிரி");
 districtMap.set("Dharmapuri", "தர்மபுரி");
+districtMap.set("Kanyakumari", "கன்யகுமாரி");
+districtMap.set("Sivagangai", "சிவகங்கை");
+districtMap.set("Thirupathur", "திருப்பதூர்");
+districtMap.set("Thiruvallur", "திருவள்ளூர்");
+districtMap.set("Thiruvannamalai", "திருவண்ணாமலை");
 
 var districts = [
+  "Nilgiris",
+  "Trichy",
+  "Villupuram",
+  "Thoothukudi",
+  "Thiruvannamalai",
+  "Thiruvallur",
+  "Thirupathur",
+  "Sivagangai",
+  "Pudukottai",
+  "Kanyakumari",
   "Kancheepuram",
   "Chennai",
   "Erode",
@@ -88,91 +108,11 @@ var districts = [
   "Dharmapuri"
 ]
 
-https.get(URL_1, (res) => {
-  logger.debug('statusCode: ' + res.statusCode);
-  var dateTime = new Date().toUTCString();
+var pdf_URL = "https://stopcorona.tn.gov.in/wp-content/uploads/2020/03/Media-Bulletin-08.05.2020.pdf";
 
-  res.setEncoding('utf8');
-  let rawData = '';
-
-  res.on('data', (d) => {
-    rawData += d;
-  });
-
-  res.on('end', () => {
-    try {
-      const responseData = JSON.parse(rawData);
-      const stateData = responseData['Tamil Nadu'];
-      const districtDatas = stateData['districtData'];
-
-      for (let district of districts) {
-        try {
-          var districtData = districtDatas[district];
-          if (undefined == districtData) {
-            districtData = {};
-            districtData['confirmed'] = 0;
-          }
-          districtData['lastupdatedtime'] = dateTime;
-          districtData['district'] = district;
-          districtData['district_ta'] = districtMap.get(district);
-          logger.info(district, districtData);
-        } catch (e) {
-          console.error(district, e);
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  });
-
-}).on('error', (e) => {
-  console.error(e);
-});
-
-
-https.get(URL_2, (res) => {
-  logger.debug('statusCode: ' + res.statusCode);
-  var dateTime = new Date().toUTCString();
-
-  res.setEncoding('utf8');
-  let rawData = '';
-
-  res.on('data', (d) => {
-    rawData += d;
-  });
-
-  res.on('end', () => {
-    try {
-      const responseData = JSON.parse(rawData);
-      const states = responseData['statewise'];
-      for (let state of states) {
-        try {
-          if (undefined == state) {
-            state = {};
-            state['confirmed'] = 0;
-            state['delta_confirmed_count'] = 0;
-            state['delta_death_count'] = 0;
-            state['active_count'] = 0;
-            state['recovered_count'] = 0;
-            state['death_count'] = 0;
-          } else {
-            state['confirmed'] = parseInt(state['confirmed']);
-            state['recovered'] = parseInt(state['recovered']);
-            state['delta_confirmed_count'] = parseInt(state['deltaconfirmed']);
-            state['delta_death_count'] = parseInt(state['deltadeaths']);
-            state['active_count'] = parseInt(state['active']);
-            state['death_count'] = parseInt(state['deaths']);
-          }
-          logger.info(state.state, state);
-        } catch (e) {
-          // console.error(district, e);
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  });
-
-}).on('error', (e) => {
-  console.error(e);
-});
+module.exports = {
+  districtMap: districtMap,
+  districts: districts,
+  logger: logger,
+  pdf_URL: pdf_URL
+} 

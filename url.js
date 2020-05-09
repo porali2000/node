@@ -1,0 +1,1 @@
+var PDF_URL = "https://stopcorona.tn.gov.in/wp-content/uploads/2020/03/Media-Bulletin-08.05.2020.pdf";
