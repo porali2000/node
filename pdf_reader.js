@@ -12,9 +12,9 @@ const request = https.get(constant.pdf_URL, function (response) {
         try {
             pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError));
             pdfParser.on("pdfParser_dataReady", pdfData => {
-                fs.writeFileSync("pdf.txt", pdfParser.getRawTextContent());
+                fs.writeFileSync("pdf.txt", pdfParser.getRawTextContent(), 'binary');
             });
-            pdfParser.loadPDF("file.pdf", body,'binary');
+            pdfParser.loadPDF("file.pdf");
         } catch (e) {
             console.error(e);
         }
