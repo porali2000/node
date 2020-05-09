@@ -14,7 +14,7 @@ const request = https.get(constant.pdf_URL, function (response) {
             pdfParser.on("pdfParser_dataReady", pdfData => {
                 fs.writeFileSync("pdf.txt", pdfParser.getRawTextContent());
             });
-            pdfParser.loadPDF("file.pdf");
+            pdfParser.loadPDF("file.pdf", body,'binary');
         } catch (e) {
             console.error(e);
         }
